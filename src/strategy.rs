@@ -13,7 +13,7 @@ use burberry::ActionSubmitter;
 use clap::Parser;
 use eyre::{ContextCompat, WrapErr};
 use lru::LruCache;
-use tracing::{debug, error, info, instrument};
+use tracing::{debug, error, info, instrument, warn};
 
 use crate::{
     meme::{
@@ -111,7 +111,7 @@ impl<T: Transport + Clone> Strategy<T> {
             token = ?buy.token,
             amount = %buy.amount,
             min_received = %buy.min_received,
-            "found new buy");
+            "\nfound new buy");
 
         self.handle_buy_optimal(tx, raw_tx, buy, submitter).await;
     }
@@ -199,7 +199,7 @@ impl<T: Transport + Clone> Strategy<T> {
             }
         };
 
-        info!(
+        warn!(
             tx = %tx.hash,
             profit = %solution.profit,
             to_buy = %solution.token_bought,
@@ -281,8 +281,10 @@ impl<T: Transport + Clone> Strategy<T> {
 
         let mut profit = U256::from(solution.profit);
         if profit < cost {
-            info!("profit {profit} is less than cost {cost}");
+            warn!("\nprofit {profit} is less than cost {cost}\n");
             return;
+        } else {
+            warn!("\nprofit {profit} is bigger than cost {cost}\n");
         }
 
         profit -= cost;
