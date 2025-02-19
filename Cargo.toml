@@ -12,3 +12,4 @@ lru = "0.12.4"
 tokio = { version = "1", features = ["full"] }
 tracing = "0.1.37"
 tracing-subscriber = "0.3.18"
+async-trait = "0.1.81"

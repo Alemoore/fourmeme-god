@@ -8,19 +8,23 @@ use alloy::{
 };
 use burberry::{
     collector::{FullBlockCollector, MempoolCollector},
-    map_collector, Engine,
+    map_collector, map_executor, Engine,
 };
 use clap::Parser;
+use crate::{
+    dummy::Dummy,
+    strategy::{Action, Config, Event, Strategy},
+};
 
-use crate::strategy::{Config, Event, Strategy};
+const MNEMONIC: &str = "animal faculty girl pattern poet wire property ribbon script punch pipe brick";
 
 #[derive(Debug, Parser)]
 pub struct Args {
     #[arg(long, env = "ETH_RPC_URL")]
     pub ipc_url: String,
 
-    #[arg(long)]
-    pub private_key: B256,
+    // #[arg(long)]
+    // pub private_key: B256,
 
     #[command(flatten)]
     pub config: Config,
@@ -37,9 +41,11 @@ pub async fn run(args: Args) {
 
     let chain_id = provider.get_chain_id().await.expect("fail to get chain id");
 
-    let signer = PrivateKeySigner::from_bytes(&args.private_key)
-        .expect("fail to parse private key")
+
+    let signer = PrivateKeySigner::random()
+        // .expect("fail to parse private key")
         .with_chain_id(Some(chain_id));
+
 
     let attacker = signer.address();
 
@@ -62,6 +68,7 @@ pub async fn run(args: Args) {
     //     todo!("implement your our bundle executor to send bundles"),
     //     Action::SendBundle
     // ));
+    engine.add_executor(map_executor!(Dummy::default(), Action::SendBundle));
 
     engine.run_and_join().await.unwrap();
 }

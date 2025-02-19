@@ -27,7 +27,7 @@ use crate::{
 
 #[derive(Debug, Clone, Parser)]
 pub struct Config {
-    #[arg(long, default_value = "1000000000", help = "Gas price in wei")]
+    #[arg(long, default_value = "15000000000", help = "Gas price in wei")]
     gas_price: u128,
 }
 

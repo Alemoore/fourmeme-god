@@ -3,6 +3,7 @@ mod run;
 mod search;
 mod start;
 mod strategy;
+mod dummy;
 
 extern crate core;
 

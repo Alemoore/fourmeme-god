@@ -12,7 +12,7 @@ use alloy::{
 };
 use eyre::eyre;
 
-pub const FOUR_MEME: Address = address!("ec4549cadce5da21df6e6422d448034b5233bfbc");
+pub const FOUR_MEME: Address = address!("EC4549caDcE5DA21Df6E6422d448034B5233bFbC");
 
 sol! {
     #[sol(rpc)]

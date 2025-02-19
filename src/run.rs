@@ -6,8 +6,10 @@ use alloy::{
     primitives::{B256, U256},
     providers::{IpcConnect, Provider, ProviderBuilder},
 };
+use alloy::sol_types::sol;
+use alloy::transports::http::reqwest::Url;
 use clap::Parser;
-
+use tracing::info;
 use crate::{meme, search};
 
 #[derive(Debug, Parser)]
@@ -22,9 +24,10 @@ pub async fn run(args: Args) {
     tracing_subscriber::fmt().init();
 
     let provider = ProviderBuilder::new()
-        .on_ipc(IpcConnect::new(args.ipc_url))
-        .await
-        .unwrap();
+        .on_http(Url::parse(&args.ipc_url).unwrap());
+        // .on_ipc(IpcConnect::new(args.ipc_url))
+        // .await
+        // .unwrap();
 
     let provider: Arc<dyn Provider<_>> = Arc::new(provider);
 
@@ -68,8 +71,8 @@ pub async fn run(args: Args) {
     let solution = search::go(context).expect("cannot find solution");
     let optimal_elapsed = start.elapsed();
 
-    println!("profit: {}", solution.profit);
-    println!("time: {:?}", optimal_elapsed);
+    info!("profit: {}", solution.profit);
+    info!("time: {:?}", optimal_elapsed);
 
-    todo!("use eth_callBundle to simulate and validate result")
+    // todo!("use eth_callBundle to simulate and validate result")
 }
